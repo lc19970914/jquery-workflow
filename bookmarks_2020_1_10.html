@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>迷茫的超级兵</title>
+    <link rel="icon" href="favicon.ico">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="fd-nav-content">
+       <section>
+           <!-- 缩放 -->
+            <div class="zoom" data-zoom="10">               
+                <span onclick="zoomIn()">-</span>         
+                <span onclick="zoomout()">+</span>       
+            </div>
+            <div id="box-all" style="transform: scale(1); transform-origin: 50% 0px 0px;">
+                <!-- 流程制作开始 -->
+                <div>
+                    <!-- 发起人 -->
+                    <div class="node-wrap">
+                        <div class="node-wrap-box start-node ">
+                            <div class="title" style="background: rgb(87, 106, 149);">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <span>发起人</span>
+                            </div>
+                            <div>
+                                <span>所有人</span>
+                                <i class="glyphicon glyphicon-chevron-right"></i>
+                            </div>
+                        </div>
+                        <div class="node-add-btn-box">
+                            <div class="add-node-btn">
+                                <button class="btn btn-primary btn-sm addNodeClick">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="node-wrap">
+                        <div class="node-wrap-box start-node ">
+                            <div class="title" style="background: rgb(255, 148, 62);">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <span class="userEdit">审核人</span>
+                                <i class="glyphicon glyphicon-remove btnRemove"></i>
+                            </div>
+                            <div>
+                                <span>所有人</span>
+                                <i class="glyphicon glyphicon-chevron-right"></i>
+                            </div>
+                        </div>
+                        <!-- 朝下剪头 -->
+                        <div class="node-add-btn-box">
+                            <div class="add-node-btn">
+                                <button class="btn btn-primary btn-sm addNodeClick">+</button>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <!-- 流程结束 -->
+                <div class="end-node">
+                    <div class="end-node-circle"></div>
+                    <div class="end-node-text">
+                        结束流程
+                    </div>
+                </div>
+            </div>
+       </section>
+    </div>
+    <div id="addtooltip-warpper">
+        <div id="addtooltip-box">
+            <div>
+                <div class="item-wrapper" data-addType="1">
+                    <span class="glyphicon glyphicon-user"></span>
+                </div>
+                <p class="item-user">审核人</p>
+            </div>
+            <div>
+                <div class="item-wrapper" data-addType="2">
+                    <span class="glyphicon glyphicon-plane"></span>
+                </div>
+                <p  class="item-user">抄送人</p>
+            </div>
+            <div>
+                <div class="item-wrapper" data-addType="3">
+                    <span class="glyphicon glyphicon-transfer"></span>
+                </div>
+                <p  class="item-user">条件分支</p>
+            </div>
+        </div>
+        <!-- 三角指针 -->
+        <div id="addtooltip-pointer">
+
+        </div>
+    </div>
+</body>
+<script>
+    var _this;
+    var size = 1.0;  
+    function zoomout() {         
+        size = size + 0.1;  
+        set(); 
+    }  
+
+
+    function zoomIn() {  
+        size = size - 0.1;  
+        set();  
+    }  
+    function set() {  
+        $("#box-all").css("transform","scale("+size+")");
+    }  
+    $("#box-all").on("click",".addNodeClick",function(e){
+        _this=this
+        let offsetTop = $(this).offset().top;
+        let offsetLeft = $(this).offset().left;
+        $("#addtooltip-warpper").css({"left":offsetLeft+20,"top":offsetTop-10,"margin-left":"30px"});
+        $("#addtooltip-warpper").hide();
+        $("#addtooltip-warpper").show(150)
+    })
+    //新增
+    $(document).on("click",".item-wrapper",function(e){
+        e.stopPropagation();//阻止事件冒泡
+        let addType = $(this).attr("data-addType");
+        if(addType == 1){  //审核人
+            html=
+                `
+            <div>
+                <div class="node-wrap">
+                    <div class="node-wrap-box start-node ">
+                        <div class="title" style="background: rgb(255, 148, 62);">
+                            <i class="glyphicon glyphicon-user"></i>
+                            <span class="userEdit">审核人</span>
+                            <i class="glyphicon glyphicon-remove btnRemove"></i>
+                        </div>
+                        <div>
+                            <span>所有人</span>
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </div>
+                    </div>
+                    <!-- 朝下剪头 -->
+                    <div class="node-add-btn-box">
+                        <div class="add-node-btn">
+                            <button class="btn btn-primary btn-sm addNodeClick">+</button>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+                `              
+        }else if(addType == 2){  //抄送人
+            html=
+                `
+            <div>
+                <div class="node-wrap">
+                    <div class="node-wrap-box start-node ">
+                        <div class="title" style="background: rgb(50, 150, 250);">
+                            <i class="glyphicon glyphicon-user"></i>
+                            <span class="userEdit">抄送人</span>
+                            <i class="glyphicon glyphicon-remove btnRemove"></i>
+                        </div>
+                        <div>
+                            <span>所有人</span>
+                            <i class="glyphicon glyphicon-chevron-right"></i>
+                        </div>
+                    </div>
+                    <!-- 朝下剪头 -->
+                    <div class="node-add-btn-box">
+                        <div class="add-node-btn">
+                            <button class="btn btn-primary btn-sm addNodeClick">+</button>
+                        </div>
+                    </div>
+                </div>   
+            </div>
+                `              
+        }else if(addType == 3){  //条件分支
+            html=
+                `
+                <div>
+                    <div class="branch-wrap">
+                        <div class="branch-box-wrap">
+                            <div class="branch-box">
+                                <span class="add-branch" title="添加条件">添加条件</span>
+                                <div class="col-box">
+                                    <div class="condition-node">
+                                        <div class="condition-node-box">
+                                            <div class="auto-judge">
+                                                <div class="title-wrapper">   
+                                                    <input type="text" class="form-control condition-input" placeholder="条件1">
+                                                    <span>优先级1</span>
+                                                    <i class="glyphicon glyphicon-remove btnRemove"></i>
+                                                </div>
+                                                <div>
+                                                    请设置条件
+                                                </div>
+                                            </div>
+                                            <div class="node-add-btn-box">
+                                                <div class="add-node-btn">
+                                                    <button class="btn btn-primary btn-sm addNodeClick">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                                           
+                                    <div class="top-left-cover-line"></div>
+                                    <div class="bottom-left-cover-line"></div>
+                                </div>
+                                <div class="col-box">
+                                    <div class="condition-node">
+                                        <div class="condition-node-box">
+                                            <div class="auto-judge">
+                                                <div class="title-wrapper">   
+                                                    <input type="text" class="form-control condition-input" placeholder="条件2">
+                                                    <span>优先级2</span>
+                                                    <i class="glyphicon glyphicon-remove btnRemove"></i>
+                                                </div>
+                                                <div>
+                                                    请设置条件
+                                                </div>
+                                            </div>                                                   
+                                            <!-- 朝下剪头 -->
+                                            <div class="node-add-btn-box">
+                                                <div class="add-node-btn">
+                                                    <button class="btn btn-primary btn-sm addNodeClick">+</button>
+                                                </div>
+                                            </div>                                                   
+                                        </div>
+                                    </div>
+                                    <div class="top-right-cover-line"></div>
+                                    <div class="bottom-right-cover-line"></div>
+                                </div>
+                            </div>
+                            <div class="node-add-btn-box">
+                                <div class="add-node-btn">
+                                    <button class="btn btn-primary btn-sm addNodeClick">+</button>
+                                </div>
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+                `           
+        }
+        // if(addType == 1 || addType == 2){
+        //     $(_this).parent().parent().parent().after(html);
+        // }else{
+        //     $(_this).parent().parent().parent().parent().after(html);
+        // }
+        $(_this).parent().parent().parent().parent().after(html);
+        $("#addtooltip-warpper").hide(100);
+    })
+    //删除
+    $(document).on("click",".btnRemove",function(e){
+        if($(this).parents().hasClass("auto-judge")){
+            $($(this).parents(".branch-wrap")[0]).parent().remove()
+        }else if($(this).parents().hasClass("node-wrap")){
+            $(this).parents(".node-wrap").parent().remove()
+        }
+    })
+    //添加条件
+    $(document).on("click",".add-branch",function(e){
+        let html = 
+                `
+                <div class="col-box">
+                    <div class="condition-node">
+                        <div class="condition-node-box">
+                            <div class="auto-judge">
+                                <div class="title-wrapper">   
+                                    <input type="text" class="form-control condition-input" placeholder="条件1">
+                                    <span>优先级1</span>
+                                    <i class="glyphicon glyphicon-remove btnRemove"></i>
+                                </div>
+                                <div>
+                                    请设置条件
+                                </div>
+                            </div>
+                            <div class="node-add-btn-box">
+                                <div class="add-node-btn">
+                                    <button class="btn btn-primary btn-sm addNodeClick">+</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                                           
+                </div>
+                `
+                $(this).parent().find(".col-box").first().after(html)
+
+    })
+        //页面滑动 新增角色框跟着滑动
+    $(".fd-nav-content").scroll( function() {
+        //获取   已存按钮（_this）  -----点击的新增    出现的距离；
+        let nowScrollTop = $(_this).offset().top-10;
+        if(!$("#addtooltip-warpper").is(":hidden"))$("#addtooltip-warpper").css("top",nowScrollTop)
+    });
+    	//绑定整个页面点击隐藏新增角色
+	$(document).on('click', function(e) {
+		e = e || window.event; //浏览器兼容性
+		let elem = e.target;      
+		if (elem.className && elem.className == $(".addNodeClick").eq(0).attr("class") && $("#addtooltip-warpper").css("display","block")) {
+			return false;
+		}
+		$("#addtooltip-warpper").hide(150);
+	});
+
+</script>
+</html>
